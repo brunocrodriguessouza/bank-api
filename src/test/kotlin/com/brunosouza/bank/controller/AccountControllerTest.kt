@@ -24,7 +24,7 @@ class AccountControllerTest {
 
     @Test
     fun `test create account`() {
-        val account = Account(name = "Test", document = "123", phone = "993311213")
+        val account = Account(name = "Test create", document = "12345678901", phone = "19993311213")
         val json = ObjectMapper().writeValueAsString(account)
 
         mockMvc.perform(MockMvcRequestBuilders.post("/accounts")
@@ -101,5 +101,107 @@ class AccountControllerTest {
 
         val findById = accountRepository.findById(account.id!!)
         Assertions.assertFalse(findById.isPresent)
+    }
+
+    @Test
+    fun `test create account validation error empty name`() {
+        val account = Account(name = "", document = "123", phone = "993311213")
+        val json = ObjectMapper().writeValueAsString(account)
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/accounts")
+            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(json))
+            .andExpect(MockMvcResultMatchers.status().isBadRequest)
+            .andExpect(MockMvcResultMatchers.jsonPath("\$.statusCode").isNumber)
+            .andExpect(MockMvcResultMatchers.jsonPath("\$.message").isString)
+            .andExpect(MockMvcResultMatchers.jsonPath("\$.statusCode").value(400))
+            .andExpect(MockMvcResultMatchers.jsonPath("\$.message").value("[nome] não pode estar em branco!"))
+            .andDo(MockMvcResultHandlers.print())
+    }
+
+    @Test
+    fun `test create account validation name should be 5 character`() {
+        val account = Account(name = "test", document = "123", phone = "993311213")
+        val json = ObjectMapper().writeValueAsString(account)
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/accounts")
+            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(json))
+            .andExpect(MockMvcResultMatchers.status().isBadRequest)
+            .andExpect(MockMvcResultMatchers.jsonPath("\$.statusCode").isNumber)
+            .andExpect(MockMvcResultMatchers.jsonPath("\$.message").isString)
+            .andExpect(MockMvcResultMatchers.jsonPath("\$.statusCode").value(400))
+            .andExpect(MockMvcResultMatchers.jsonPath("\$.message").value("[nome] deve ter no mínimo 5 caracteres!"))
+            .andDo(MockMvcResultHandlers.print())
+    }
+
+    @Test
+    fun `test create account validation error empty document`() {
+        val account = Account(name = "test create", document = "", phone = "993311213")
+        val json = ObjectMapper().writeValueAsString(account)
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/accounts")
+            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(json))
+            .andExpect(MockMvcResultMatchers.status().isBadRequest)
+            .andExpect(MockMvcResultMatchers.jsonPath("\$.statusCode").isNumber)
+            .andExpect(MockMvcResultMatchers.jsonPath("\$.message").isString)
+            .andExpect(MockMvcResultMatchers.jsonPath("\$.statusCode").value(400))
+            .andExpect(MockMvcResultMatchers.jsonPath("\$.message").value("[document] não pode estar em branco!"))
+            .andDo(MockMvcResultHandlers.print())
+    }
+
+    @Test
+    fun `test create account validation document should be 11 character`() {
+        val account = Account(name = "test create", document = "123", phone = "993311213")
+        val json = ObjectMapper().writeValueAsString(account)
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/accounts")
+            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(json))
+            .andExpect(MockMvcResultMatchers.status().isBadRequest)
+            .andExpect(MockMvcResultMatchers.jsonPath("\$.statusCode").isNumber)
+            .andExpect(MockMvcResultMatchers.jsonPath("\$.message").isString)
+            .andExpect(MockMvcResultMatchers.jsonPath("\$.statusCode").value(400))
+            .andExpect(MockMvcResultMatchers.jsonPath("\$.message").value("[document] deve ter no mínimo 11 caracteres!"))
+            .andDo(MockMvcResultHandlers.print())
+    }
+
+    @Test
+    fun `test create account validation error empty phone`() {
+        val account = Account(name = "test create", document = "12345678901", phone = "")
+        val json = ObjectMapper().writeValueAsString(account)
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/accounts")
+            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(json))
+            .andExpect(MockMvcResultMatchers.status().isBadRequest)
+            .andExpect(MockMvcResultMatchers.jsonPath("\$.statusCode").isNumber)
+            .andExpect(MockMvcResultMatchers.jsonPath("\$.message").isString)
+            .andExpect(MockMvcResultMatchers.jsonPath("\$.statusCode").value(400))
+            .andExpect(MockMvcResultMatchers.jsonPath("\$.message").value("[phone] não pode estar em branco!"))
+            .andDo(MockMvcResultHandlers.print())
+    }
+
+    @Test
+    fun `test create account validation phone should be 11 character`() {
+        val account = Account(name = "test create", document = "12345678901", phone = "993311213")
+        val json = ObjectMapper().writeValueAsString(account)
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/accounts")
+            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(json))
+            .andExpect(MockMvcResultMatchers.status().isBadRequest)
+            .andExpect(MockMvcResultMatchers.jsonPath("\$.statusCode").isNumber)
+            .andExpect(MockMvcResultMatchers.jsonPath("\$.message").isString)
+            .andExpect(MockMvcResultMatchers.jsonPath("\$.statusCode").value(400))
+            .andExpect(MockMvcResultMatchers.jsonPath("\$.message").value("[phone] deve ter no mínimo 11 caracteres!"))
+            .andDo(MockMvcResultHandlers.print())
     }
 }
